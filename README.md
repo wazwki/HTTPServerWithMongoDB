@@ -1,12 +1,11 @@
-# How to config MongoDB in golang HTTP-server
+# **How to Set Up MongoDB in a Golang HTTP Server**
 
-## Step 1:
-
-### Install and import driver for connect to MongoDB:
+# **1. Install and Import the Driver for Connecting to MongoDB:**
 
 ```bash
 go get go.mongodb.org/mongo-driver/mongo
 ```
+
 ```go
 import (
     "go.mongodb.org/mongo-driver/mongo"
@@ -14,74 +13,78 @@ import (
 )
 ```
 
-## Step 2:
-
-### Connect to MongoDB:
+# **2. Connect to MongoDB:**
 
 ```go
 var (
-	Client *mongo.Client
-	err    error
+    Client *mongo.Client
+    err    error
 )
 
 func Connect() {
-	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+    clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
 
-	Client, err = mongo.Connect(context.TODO(), clientOptions)
-	if err != nil {
-		log.Fatal(err)
-	}
+    Client, err = mongo.Connect(context.TODO(), clientOptions)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	err = Client.Ping(context.TODO(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
+    err = Client.Ping(context.TODO(), nil)
+    if err != nil {
+        log.Fatal(err)
+    }
 
-	fmt.Println("Connected to MongoDB")
+    fmt.Println("Connected to MongoDB")
 }
 ```
 
-### Create a collection:
+## **Create a Collection:**
+
 ```go
 var collection *mongo.Collection = Client.Database("testdb").Collection("items")
 ```
 
-## Step 3:
+# **3. Use the Created Client Object for CRUD Operations:**
 
-### Use created client-object for CRUD-operations:
+## **3.1. Create:**
 
-#### Create:
 ```go
 result, err = collection.InsertOne(context.TODO(), data)
 ```
 
-#### Read:
+## **3.2. Read:**
+
 ```go
 err = collection.FindOne(context.TODO(), bson.M{"_id": id}).Decode(&data)
 ```
 
-#### Read all:
+## **3.3. Read All:**
+
 ```go
 tmp, err = collection.Find(context.TODO(), nil)
 tmp.All(context.TODO(), data)
 ```
 
-#### Update:
+## **3.4. Update:**
+
 ```go
 _, err = collection.UpdateByID(context.TODO(), id, data)
 ```
 
-#### Update many:
+## **3.5. Update Many:**
+
 ```go
 _, err = collection.UpdateMany(context.TODO(), bson.M{"_id": ids}, newData)
 ```
 
-#### Delete:
+## **3.6. Delete:**
+
 ```go
 _, err = collection.DeleteOne(context.TODO(), bson.M{"_id": id})
 ```
 
-#### Delete many:
+## **3.7. Delete Many:**
+
 ```go
 _, err = collection.DeleteMany(context.TODO(), bson.M{"_id": ids})
 ```
